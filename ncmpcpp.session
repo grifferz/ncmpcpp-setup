@@ -1,0 +1,7 @@
+# $HOME/.config/kitty/ncmpcpp.session
+
+layout tall:bias=75
+cd ~
+launch ncmpcpp --screen playlist
+launch bash -c '${HOME}/.ncmpcpp/album_cover_poller.sh'
+launch bash -c 'ncmpcpp --config=${HOME}/.ncmpcpp/viz.conf --screen visualizer'
