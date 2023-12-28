@@ -32,7 +32,9 @@ ncmpcpp_cover="$cover_dir/current_cover.jpg"
 
 # How many milliseconds to keep the desktop notification visible for. A lot of
 # notiifcation daemons don't support this, e.g. GNOME just ignores it, but
-# Dunst and Wired do.
+# Dunst and Wired do. On GNOME you can use this extension to change the timeout
+# for all notification popups:
+#     https://extensions.gnome.org/extension/3795/notification-timeout/
 notification_timeout=10000
 
 ### No user-serviceable parts below here.
