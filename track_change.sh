@@ -68,6 +68,7 @@ do_desktop_notification() {
     # ${meta[5]} = date
     # ${meta[6]} = originaldate
     local -n meta="$1"
+    local cover_art="$2"
 
     local artist
     local title
@@ -114,15 +115,17 @@ do_desktop_notification() {
     # Transient hint not necessary on GNOME but might be elsewhere.
     #
     # image-path hint uses the album cover as the notification icon. This seems
-    # quite unreliable on GNOME, like it caches an old one for ages. Other
-    # notification daemons are more helpful.
+    # quite unreliable on GNOME, like it caches an old one for ages, but it
+    # seems to do that by file path so we can bust the cache by sending the
+    # path to the original file (not the one that the poller script is
+    # watching).
     notify-send \
         --app-name MPD \
         --urgency normal \
         --expire-time="$notification_timeout" \
         --transient \
         --hint="int:transient:1" \
-        --hint="string:image-path:$ncmpcpp_cover" \
+        --hint="string:image-path:$cover_art" \
         "$artist • $title" \
         "$albumartist • $album"
 }
@@ -174,18 +177,22 @@ else
             containing_dir="$(dirname "$full_track_file")"
 
             if [ -r "$containing_dir/$candidate_name" ]; then
-                use_album_cover "$containing_dir/$candidate_name"
+                chosen_cover="$containing_dir/$candidate_name"
+                use_album_cover "$chosen_cover"
             else
-                use_album_cover "$default_cover"
+                chosen_cover="$default_cover"
+                use_album_cover "$chosen_cover"
             fi
             ;;
         "1")
             warning "non-album track '$track_file' not handled yet"
-            use_album_cover "$default_cover"
+            chosen_cover="$default_cover"
+            use_album_cover "$chosen_cover"
             ;;
         *)
             warning "Don't know how to handle track path '$full_track_file'"
-            use_album_cover "$default_cover"
+            chosen_cover="$default_cover"
+            use_album_cover "$chosen_cover"
             ;;
     esac
 fi
@@ -203,5 +210,5 @@ if [ -z "${mpc[1]}" ] || [ -z "${mpc[2]}" ]; then
     warning "Current track '$full_track_file' didn't give us an artist and title,
 so no desktop notification"
 else
-    do_desktop_notification mpc
+    do_desktop_notification mpc "$chosen_cover"
 fi
