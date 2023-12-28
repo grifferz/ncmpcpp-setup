@@ -49,7 +49,7 @@ warning() {
 }
 
 use_album_cover() {
-    # ALways copy the default cover, because otherwqise the inotify in the
+    # Always copy the default cover, because otherwise the inotify in the
     # poller won't trigger and album info for things with no cover will never
     # be displayed.
     # Otherwise only bother if the files are actually different (think -
