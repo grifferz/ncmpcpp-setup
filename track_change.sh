@@ -2,7 +2,7 @@
 
 # $HOME/.ncmpcpp/track_change.sh
 
-# Andy Smith <andy@strugglers.net>
+# © Andy Smith <andy@strugglers.net>
 # SPDX-License-Identifier: 0BSD
 
 set -eu
