@@ -35,7 +35,7 @@ ncmpcpp_cover="$cover_dir/current_cover.jpg"
 # Dunst and Wired do. On GNOME you can use this extension to change the timeout
 # for all notification popups:
 #     https://extensions.gnome.org/extension/3795/notification-timeout/
-notification_timeout=10000
+notification_timeout=5000
 
 ### No user-serviceable parts below here.
 
