@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # $HOME/.ncmpcpp/track_change.sh
 

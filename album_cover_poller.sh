@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # $HOME/.ncmpcpp/album_cover_poller.sh
 
-# Andy Smith <andy@strugglers.net>
+# © Andy Smith <andy@strugglers.net>
 # SPDX-License-Identifier: 0BSD
 
 ncmpcpp_home="$HOME/.ncmpcpp"
