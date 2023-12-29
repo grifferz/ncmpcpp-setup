@@ -41,7 +41,7 @@ notification_timeout=5000
 
 error() {
     logger -t "$(basename "$0")" "${*}"
-    printf "%s\\n" "%{*}" 1>&2
+    printf "%s\\n" "${*}" 1>&2
 }
 
 warning() {
