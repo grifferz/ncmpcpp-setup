@@ -9,9 +9,6 @@ set -eu
 
 ### Some things user might want to change.
 
-# This is the path to the music library as known by mpd.
-music_base="/path/to/your/music"
-
 # File name that each album's art is stored under.
 candidate_name="cover.jpg"
 
@@ -46,6 +43,31 @@ error() {
 
 warning() {
     logger -t "$(basename "$0")" "${*}"
+}
+
+show_usage() {
+    printf "Usage: %s [-m music_dir]\n" "$(basename "$0")"
+    printf "       -m Specify directory that MPD knows your music is in\n"
+    printf "          Defaults to \$HOME/Music\n"
+}
+
+parse_args() {
+    while getopts 'hm:' opt; do
+        case "$opt" in
+            m)
+                music_base="$OPTARG"
+                ;;
+            h|?)
+                show_usage
+                exit
+        esac
+    done
+
+    shift "$((OPTIND -1))"
+
+    if [ -z "$music_base" ]; then
+        music_base="$HOME/Music"
+    fi
 }
 
 use_album_cover() {
@@ -130,6 +152,18 @@ do_desktop_notification() {
         "$albumartist • $album"
 }
 
+music_base=
+
+parse_args "$@"
+
+if [ ! -d "$music_base" ]; then
+    error "$music_base doesn't seem to be a directory. Do you need to set -m?"
+    show_usage
+    use_album_cover "$default_cover"
+    exit 1
+fi
+
+
 # Get all the metadata from mpd.
 # I sure hope none of it ever contains a tab…
 while IFS= read -r mpc_line; do
@@ -148,8 +182,11 @@ full_track_file="$music_base/$track_file"
 # Sanity checks - can't work out an album cover without knowing an existing
 # directory path.
 if [ ! -r "$full_track_file" ]; then
-    error "mpd said that file '$full_track_file' is currently playing but it
-doesn't seem to exist"
+    error "mpd said that file '$full_track_file' is currently playing but it" \
+          "doesn't seem to exist"
+    error "Is your music_dir set correctly with -m?"
+    show_usage
+                chosen_cover="$default_cover"
     use_album_cover "$default_cover"
 else
     if [ ! -d "$cover_dir" ]; then
