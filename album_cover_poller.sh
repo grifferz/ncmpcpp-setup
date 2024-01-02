@@ -26,7 +26,7 @@ display_centered_at_row() {
     # Calculate length of string. Would "wc -m" do better at handling non-ASCII?
     input_len="${#cleaned_input}"
 
-    if [ "$input_len" -ge "$termwidth" ]; then
+    if ((input_len >= termwidth)); then
         start_pos=0
     else
         start_pos="$(( (termwidth - input_len) / 2))"
@@ -48,22 +48,22 @@ show_cover() {
         # empty field, so we have to use mapfile to explode it into an array
         # instead.
         mapfile -td $'\t' mpc < <(printf %s "$mpc_line")
-        if [ -z "${mpc[1]}" ]; then
+        if [[ -z "${mpc[1]}" ]]; then
             current_artist="${mpc[0]}"
         else
             current_artist="${mpc[1]}"
         fi;
 
-        if [ -z "${mpc[4]}" ] && [ -z "${mpc[3]}" ]; then
+        if [[ -z "${mpc[4]}" && -z "${mpc[3]}" ]]; then
             # No date known at all.
             current_year="unknown year"
-        elif [ -z "${mpc[4]}" ]; then
+        elif [[ -z "${mpc[4]}" ]]; then
             current_year="${mpc[3]}"
         else
             current_year="${mpc[4]}"
         fi
 
-        if [ -z "${mpc[2]}" ]; then
+        if [[ -z "${mpc[2]}" ]]; then
             current_album="Unknown Album"
         else
             current_album="${mpc[2]}"
@@ -77,12 +77,12 @@ show_cover() {
     timg --center "$ncmpcpp_cover"
 }
 
-if [ ! -d "$cover_dir" ]; then
+if [[ ! -d "$cover_dir" ]]; then
     mkdir -vp "$cover_dir"
     cp "$default_cover" "$ncmpcpp_cover"
 fi
 
-if [ ! -f "$ncmpcpp_cover" ]; then
+if [[ ! -f "$ncmpcpp_cover" ]]; then
     cp "$default_cover" "$ncmpcpp_cover"
 fi
 

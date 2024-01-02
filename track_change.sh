@@ -65,7 +65,7 @@ parse_args() {
 
     shift "$((OPTIND -1))"
 
-    if [ -z "$music_base" ]; then
+    if [[ -z "$music_base" ]]; then
         music_base="$HOME/Music"
     fi
 }
@@ -76,7 +76,7 @@ use_album_cover() {
     # be displayed.
     # Otherwise only bother if the files are actually different (think -
     # playing consecutive tracks of same album).
-    if [ "$1" = "$default_cover" ] || ! cmp --silent "$1" "$ncmpcpp_cover"; then
+    if [[ "$1" = "$default_cover" ]] || ! cmp --silent "$1" "$ncmpcpp_cover"; then
         cp "$1" "$ncmpcpp_cover"
     fi
 }
@@ -102,27 +102,27 @@ do_desktop_notification() {
     title="${meta[2]}"
 
     # If we don't have an album artist then we'll just assume the track artist.
-    if [ -n "${meta[3]}" ]; then
+    if [[ -n "${meta[3]}" ]]; then
         albumartist="${meta[3]}"
     else
         albumartist="$artist"
     fi
 
     # If we know the original date, use that, else the date, else nothing.
-    if [ "${meta[6]+x}" ]; then
+    if [[ "${meta[6]+x}" ]]; then
         year="${meta[6]}"
-    elif [ "${meta[5]+x}" ]; then
+    elif [[ "${meta[5]+x}" ]]; then
         year="${meta[5]}"
     fi
 
-    if [ -z "${meta[4]+x}" ]; then
+    if [[ -z "${meta[4]+x}" ]]; then
         album="Unknown Album"
     else
         album="${meta[4]}"
     fi
 
     # Add the year on the end of the album if we have it.
-    if [ -n "$year" ]; then
+    if [[ -n "$year" ]]; then
         album="$album • $year"
     fi
 
@@ -156,7 +156,7 @@ music_base=
 
 parse_args "$@"
 
-if [ ! -d "$music_base" ]; then
+if [[ ! -d "$music_base" ]]; then
     error "$music_base doesn't seem to be a directory. Do you need to set -m?"
     show_usage
     use_album_cover "$default_cover"
@@ -181,7 +181,7 @@ full_track_file="$music_base/$track_file"
 
 # Sanity checks - can't work out an album cover without knowing an existing
 # directory path.
-if [ ! -r "$full_track_file" ]; then
+if [[ ! -r "$full_track_file" ]]; then
     error "mpd said that file '$full_track_file' is currently playing but it" \
           "doesn't seem to exist"
     error "Is your music_dir set correctly with -m?"
@@ -189,7 +189,7 @@ if [ ! -r "$full_track_file" ]; then
                 chosen_cover="$default_cover"
     use_album_cover "$default_cover"
 else
-    if [ ! -d "$cover_dir" ]; then
+    if [[ ! -d "$cover_dir" ]]; then
         mkdir -p "$cover_dir"
     fi
 
@@ -213,7 +213,7 @@ else
         "2")
             containing_dir="$(dirname "$full_track_file")"
 
-            if [ -r "$containing_dir/$candidate_name" ]; then
+            if [[ -r "$containing_dir/$candidate_name" ]]; then
                 chosen_cover="$containing_dir/$candidate_name"
                 use_album_cover "$chosen_cover"
             else
@@ -243,7 +243,7 @@ fi
 # ${mpc[6]} = originaldate
 #
 # We need at least an artist and a title to do a desktop notification.
-if [ -z "${mpc[1]}" ] || [ -z "${mpc[2]}" ]; then
+if [[ -z "${mpc[1]}" || -z "${mpc[2]}" ]]; then
     warning "Current track '$full_track_file' didn't give us an artist and title,
 so no desktop notification"
 else
