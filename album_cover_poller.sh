@@ -14,9 +14,13 @@ green="$(tput setaf 2)"
 normal="$(tput sgr0)"
 
 display_centered_at_row() {
+    local termwidth
     termwidth="$(tput cols)"
-    input="$1"
-    row="$2"
+    local input="$1"
+    local row="$2"
+
+    local cleaned_input
+    local input_len
 
     # This horrible sed that I got from somewhere strips out all ANSI escape
     # sequences from the input, because otherwise we'll miscalculate how long
@@ -27,13 +31,19 @@ display_centered_at_row() {
     input_len="${#cleaned_input}"
 
     if ((input_len >= termwidth)); then
-        start_pos=0
+        # String is as big as or bigger than our terminal, so it's going to
+        # wrap. Let's make it wrap nicely.
+        newrow="$row"
+        while read -r line; do
+            display_centered_at_row "$line" "$newrow"
+            (( newrow++ ))
+        done < <(printf "%s" "$input" | fmt -w "$termwidth")
     else
+        local start_pos
         start_pos="$(( (termwidth - input_len) / 2))"
+        printf '\e[%u;%uH' "$row" "$start_pos"
+        printf "%s\n" "$input"
     fi
-
-    printf '\e[%u;%uH' "$row" "$start_pos"
-    printf "%s\n" "$input"
 }
 
 show_cover() {
